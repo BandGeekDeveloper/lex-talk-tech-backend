@@ -28,16 +28,16 @@ const getAllSpeakers = async (res) => {
 
     res.status(200).json(speakers);
   } catch {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal server error." });
   }
 };
 
 // read a single speaker by id or email
-const getAUser = async (req, res) => {
+const getASpeaker = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "Invalid Speaker ID" });
+    return res.status(404).json({ error: "Please enter a valid Speaker ID." });
   }
 
   try {
@@ -50,32 +50,68 @@ const getAUser = async (req, res) => {
     }
 
     if (!speaker) {
-      return res.status(404).json({ error: "Speaker does not exist" });
+      return res
+        .status(404)
+        .json({ error: "Please enter a speaker id or email." });
     }
 
     res.status(200).json(speaker);
   } catch (err) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal server error." });
   }
 };
 
-// const updateSpeaker = async (req, res) => {
-//     const {id} = req.params;
+const updateSpeaker = async (req, res) => {
+  const { id } = req.params;
 
-//     if (!mongoose.Types.ObjectId.isValid(id)) {
-//         return res.status(404).json({error: "Invalid speaker ID"})
-//     }
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: "Please enter a valid Speaker ID." });
+  }
 
-//     try {
+  try {
+    let speaker;
+    let speakerEmail = req.body.email;
 
-//         let speaker;
+    speaker = await Speaker.findOneAndUpdate({ _id: id }, { ...req.body });
 
-//         speaker = await Speaker.findOneAndUpdate({_id: id}, {...req.body});
+    if (!speaker) {
+      speaker = await Speaker.findOneAndUpdate(
+        { email: speakerEmail },
+        { ...req.body },
+        { new: true }
+      );
+    }
 
-//         if (!speaker) {
-//             speaker = await Speaker.findOneAndUpdate({_email: email}, {...req.body});
-//         }
-//     } catch (err) {
+    if (!speaker) {
+      return res
+        .status(404)
+        .json({ error: "Please enter a speaker ID or email." });
+    }
 
-//     }
-// }
+    res.status(200).json({ message: "Speaker has been updated!" });
+  } catch (err) {
+    return res.status(500).json({ error: "Internal server Error." });
+  }
+};
+
+const deleteSpeaker = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: "Please enter a valid Speaker ID." });
+  }
+
+  try {
+    const speaker = await Speaker.findByIdAndDelete(id);
+
+    if (!speaker) {
+      return res
+        .status(404)
+        .json({ error: "Please enter a speaker ID or email." });
+    }
+
+    res.status(200).json({ message: "Speaker has been deleted." });
+  } catch (err) {
+    return res.status(500).json({ error: "Internal server error." });
+  }
+};
