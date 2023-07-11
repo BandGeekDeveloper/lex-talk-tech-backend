@@ -8,6 +8,15 @@ const { MongoClient, ServerApiVersion } = require("mongodb");
 const uri = process.env.ATLAS_URI;
 const port = process.env.PORT;
 
+app.use(express.json());
+
+app.use((req, res, next) => {
+  console.log(req.path, req.method);
+  next();
+});
+
+// app.use("/api/speakers", speakerRoute);
+
 mongoose
   .connect(uri, {
     useNewUrlParser: true,
