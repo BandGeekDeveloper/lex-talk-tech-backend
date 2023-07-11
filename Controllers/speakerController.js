@@ -32,7 +32,7 @@ const getAllSpeakers = async (res) => {
   }
 };
 
-// read a single speaker by id
+// read a single speaker by id or email
 const getAUser = async (req, res) => {
   const { id } = req.params;
 
