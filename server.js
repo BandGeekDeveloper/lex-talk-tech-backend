@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
+const speakerRoute = require("./routes/speakers");
+
 const app = express();
 
 const { MongoClient, ServerApiVersion } = require("mongodb");
@@ -15,7 +17,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use("/api/speakers", speakerRoute);
+app.use("/api/speakers", speakerRoute);
 
 mongoose
   .connect(uri, {
@@ -24,7 +26,7 @@ mongoose
   })
   .then(() => {
     console.log("Connected to MongoDB");
-    // Start your server
+    // Start server
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });

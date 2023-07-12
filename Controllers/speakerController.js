@@ -3,17 +3,51 @@ const mongoose = require("mongoose");
 
 // This function will be run when a speaker submits their form
 const createSpeaker = async (req, res) => {
-  const { firstName, lastName, email, organization, phoneNumber, talkTopic } =
-    req.body;
+  // the request body when a speaker fills out the form.
+  const {
+    firstName,
+    lastName,
+    email,
+    organization,
+    phoneNumber,
+    topic,
+    createdAt,
+  } = req.body;
+
+  // checks for the validity of the email format.
+  const isValidEmail = (email) => {
+    const regEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    return regEmail.test(email);
+  };
+
+  if (!isValidEmail(email)) {
+    return res
+      .status(400)
+      .json({ error: "Please enter a valid email address." });
+  }
 
   try {
+    const email = req.body.email;
+
+    // checks to see if the email they create is unique.
+    const existingEmail = await Speaker.findOne({ email: email });
+
+    if (existingEmail) {
+      return res.status(409).json({
+        error: "This email already exists. Please Choose another one.",
+      });
+    }
+
+    // if it passes the check above it will create a speaker with the following credentials, otherwise it will give an error.
     const speaker = await Speaker.create({
       firstName,
       lastName,
       email,
       organization,
       phoneNumber,
-      talkTopic,
+      topic,
+      createdAt,
     });
     res.status(200).json(speaker);
   } catch (err) {
@@ -24,6 +58,7 @@ const createSpeaker = async (req, res) => {
 // Read all speakers sorted by last name ascending
 const getAllSpeakers = async (res) => {
   try {
+    //finds all speakers and sorts by last name. Returns the speaker in JSON format.
     const speakers = await Speaker.find({}).sort({ lastName: 1 });
 
     res.status(200).json(speakers);
@@ -36,6 +71,7 @@ const getAllSpeakers = async (res) => {
 const getASpeaker = async (req, res) => {
   const { id } = req.params;
 
+  // checks to see if the speaker ID is a valid mongoose Object ID
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "Please enter a valid Speaker ID." });
   }
@@ -114,4 +150,12 @@ const deleteSpeaker = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ error: "Internal server error." });
   }
+};
+
+module.exports = {
+  createSpeaker,
+  getAllSpeakers,
+  getASpeaker,
+  updateSpeaker,
+  deleteSpeaker,
 };
