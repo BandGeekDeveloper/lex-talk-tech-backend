@@ -1,37 +1,38 @@
 const mongoose = require("mongoose");
 const Conference = require("./conferenceModel");
+const Speaker = require("./speakerModel");
 
 const Schema = mongoose.Schema;
 
-const speakerSchema = new Schema({
-  firstName: {
+const eventSchema = new Schema({
+  title: {
     type: String,
     required: true,
   },
 
-  lastName: {
+  description: {
     type: String,
     required: true,
   },
 
-  bio: {
-    type: String,
-    required: false,
+  startTime: {
+    type: Date,
+    required: true,
   },
 
-  email: {
+  endTime: {
+    type: Date,
+    required: true,
+  },
+
+  eventType: {
     type: String,
     required: true,
   },
 
-  organization: {
-    type: String,
-    required: false,
-  },
-
-  phoneNumber: {
-    type: String,
-    required: false,
+  speakerId: {
+    type: Schema.Types.ObjectId,
+    ref: "Speaker",
   },
 
   conferenceId: {
@@ -45,4 +46,4 @@ const speakerSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("Speaker", speakerSchema);
+module.exports = mongoose.model("Event", eventSchema);

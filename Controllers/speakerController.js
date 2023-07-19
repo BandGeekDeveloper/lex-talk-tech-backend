@@ -1,5 +1,7 @@
 const Speaker = require("../Models/speakerModel");
+const Conference = require("../Models/conferenceModel");
 const mongoose = require("mongoose");
+const conferenceModel = require("../Models/conferenceModel");
 
 // This function will be run when a speaker submits their form
 const createSpeaker = async (req, res) => {
@@ -7,9 +9,11 @@ const createSpeaker = async (req, res) => {
   const {
     firstName,
     lastName,
+    bio,
     email,
     organization,
     phoneNumber,
+    conferenceId,
     topic,
     createdAt,
   } = req.body;
@@ -43,15 +47,35 @@ const createSpeaker = async (req, res) => {
     const speaker = await Speaker.create({
       firstName,
       lastName,
+      bio,
       email,
       organization,
       phoneNumber,
+      conference: conferenceId,
       topic,
       createdAt,
     });
     res.status(200).json(speaker);
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+};
+
+const getSpeakerByConferenceId = async (req, res) => {
+  const { conferenceId } = req.params;
+
+  try {
+    const speakers = await Speaker.find({ conference: conferenceId });
+
+    if (!conferenceId) {
+      res.status(200).json({
+        message: "This speaker has no conferences.",
+      });
+    }
+
+    res.status(200).json(speakers);
+  } catch (err) {
+    res.status(500).json({ error: "Internal server error." });
   }
 };
 
@@ -158,4 +182,5 @@ module.exports = {
   getASpeaker,
   updateSpeaker,
   deleteSpeaker,
+  getSpeakerByConferenceId,
 };
