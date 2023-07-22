@@ -1,7 +1,6 @@
 const Speaker = require("../Models/speakerModel");
 const Conference = require("../Models/conferenceModel");
 const mongoose = require("mongoose");
-const conferenceModel = require("../Models/conferenceModel");
 
 const throwErrorResponse = (res, status, message) => {
   return res.status(status).json({ error: message });

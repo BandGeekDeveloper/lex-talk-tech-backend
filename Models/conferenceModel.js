@@ -13,9 +13,29 @@ const conferenceSchema = new Schema({
     required: true,
   },
 
-  venue: {
+  venueName: {
     type: String,
     required: false,
+  },
+
+  venueAddress1: {
+    type: String,
+  },
+
+  venueAddress2: {
+    type: String,
+  },
+
+  venueCity: {
+    type: String,
+  },
+
+  venueState: {
+    type: String,
+  },
+
+  venuePostalCode: {
+    type: Number,
   },
 
   createdAt: {
