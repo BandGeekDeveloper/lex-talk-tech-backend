@@ -111,11 +111,51 @@ const getAnEvent = async (req, res) => {
   }
 };
 
-// TODO: Update and Delete
+const updateEvent = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: "Please enter a valid event ID" });
+  }
+
+  try {
+    const event = await Event.findOneAndUpdate({ _id: id }, { ...req.body });
+
+    if (!event) {
+      return res.status(404).json({ error: "Please enter an event ID." });
+    }
+    res.status(200).json({ message: "Event has been updated!" });
+  } catch (err) {
+    return res.status(500).json({ error: "Internal Server error." });
+  }
+};
+
+const deleteEvent = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: "Please enter a valid event ID." });
+  }
+
+  try {
+    const event = await Event.findByIdAndDelete(id);
+
+    if (!event) {
+      return res.status(404).json({ error: "Please enter a event ID" });
+    }
+
+    res.status(200).json({ message: "Event has been deleted." });
+  } catch (err) {
+    return res.status(500).json({ error: "Internal server error." });
+  }
+};
 
 module.exports = {
   createEvent,
   getEventByConferenceId,
   getEventBySpeakerId,
   getAllEvents,
+  getAnEvent,
+  updateEvent,
+  deleteEvent,
 };

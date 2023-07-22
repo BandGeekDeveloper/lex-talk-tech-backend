@@ -3,6 +3,9 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const speakerRoute = require("./routes/speakers");
+const eventRoute = require("./routes/events");
+const conferenceRoute = require("./routes/conferences");
+const platformRoutes = require("./routes/platforms");
 
 const app = express();
 
@@ -18,6 +21,9 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/speakers", speakerRoute);
+app.use("/api/events", eventRoute);
+app.use("/api/conferences", conferenceRoute);
+app.use("/api/platforms", platformRoutes);
 
 mongoose
   .connect(uri, {
