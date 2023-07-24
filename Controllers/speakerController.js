@@ -15,7 +15,6 @@ const createSpeaker = async (req, res) => {
     bio,
     email,
     organization,
-    phoneNumber,
     conferenceId,
     topic,
     createdAt,
@@ -59,7 +58,6 @@ const createSpeaker = async (req, res) => {
       bio,
       email,
       organization,
-      phoneNumber,
       conference: conferenceId,
       topic,
       createdAt,
@@ -80,7 +78,7 @@ const createSpeaker = async (req, res) => {
 const getAllSpeakers = async (req, res) => {
   try {
     //finds all speakers and sorts by last name. Returns the speaker in JSON format.
-    const speakers = await Speaker.find({}).sort({ lastName: 1 });
+    const speakers = await Speaker.find({}).sort({ lastName: 1 }).populate("Conference");
 
     res.status(200).json(speakers);
   } catch {

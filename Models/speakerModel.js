@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Conference = require("./conferenceModel");
 
 const Schema = mongoose.Schema;
 
@@ -29,13 +28,8 @@ const speakerSchema = new Schema({
     required: false,
   },
 
-  phoneNumber: {
-    type: String,
-    required: false,
-  },
-
-  conferenceId: {
-    type: Schema.Types.ObjectId,
+  conference: {
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Conference",
   },
 
